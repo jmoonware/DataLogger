@@ -1,0 +1,17 @@
+[project]
+name = "datalogger"
+version = "0.1.0"
+description = "Flat file data logger, organized by y/m/d file structure"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "commandwork",
+    "jedi-language-server>=0.46.0",
+    "numpy>=2.3.5",
+    "portalocker>=3.2.0",
+    "pytz>=2025.2",
+    "requests>=2.32.5",
+]
+
+[tool.uv.sources]
+commandwork = { git = "https://github.com/jmoonware/commandwork" }
