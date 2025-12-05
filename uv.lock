@@ -102,7 +102,7 @@ wheels = [
 [[package]]
 name = "commandwork"
 version = "0.1.0"
-source = { git = "https://github.com/jmoonware/commandwork#4a3a16729aa11dbe14b59061134355360394c4bd" }
+source = { git = "https://github.com/jmoonware/commandwork#fb817aac9613930fdfca51a39ed73ab07d8d839e" }
 dependencies = [
     { name = "jedi-language-server" },
     { name = "pytest" },

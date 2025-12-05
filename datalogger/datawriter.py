@@ -1,5 +1,6 @@
 from commandwork.worker import Worker
 import os
+import time
 from datetime import datetime as dt
 from datetime import timedelta
 from datetime import timezone as tzone
@@ -31,13 +32,26 @@ class DataWriter(Worker):
 		# if any of these throw an exception then handle here
 		try:
 			if not os.path.isdir(self.data_root):
-				os.makedirs(self.data_root)	
-			tfile=os.path.join(self.data_root,'delete.me')
-			with open(tfile,'w') as f:
-				f.write('#') # arbitrary; just makes sure file is there
+				os.makedirs(self.data_root)
+		except OSError as ox:
+			self.logger.error("Failed to create dirs at {0}".format(self.data_root))
+			self.data_root=None # will cause exceptions down the line if used
+		try:
+			# unique-ish name
+			tfile_name = 'delete.me.' + str(time.perf_counter()).split('.')[-1]
+			# avoid name collisions
+			tfile=os.path.join(self.data_root,tfile_name)
+			pre_tfile=tfile
+			i=0
+			while(os.path.exists(tfile)):
+				tfile=pre_tfile+'.'+str(i)
+				i+=1 
+			with portalocker.Lock(tfile,'a+b',timeout=5) as f:
+				# arbitrary; just makes sure file is there
+				f.write('#'.encode()) 
 			os.remove(tfile)
 		except OSError as ox:
-			self.logger.debug("Failed to gain write access to {0}".format(self.data_root))
+			self.logger.error("Failed to gain write access to {0}".format(self.data_root))
 			self.data_root=None # will cause exceptions down the line if used
 
 
@@ -75,7 +89,8 @@ class DataWriter(Worker):
 						pairs_for_url.append(pair_to_write)
 			# try to upload
 			if self.data_url:
-				# todo: aggregate in one request
+				# TODO: aggregate in one request
+				# TODO: add retry logic
 				for ptw in pairs_for_url:
 					url=self.data_url+"/"+origin
 					payload={'time':str(ptw[0]),'reading':str(ptw[1])}
@@ -92,4 +107,8 @@ class DataWriter(Worker):
 			for k in d:
 				ret[k]=d[k]
 		return(ret)
-
+	def Exit(self):
+		# this should dump any remaining values if we get Stop()'ed 
+		# with values left to write
+		self.logger.info(str(self) + " Last Execute before normal exit") 
+		self.Execute()
