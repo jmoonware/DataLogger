@@ -13,7 +13,7 @@ import re
 import json
 import portalocker # needed for cross-process awareness
 import threading
-from dlcommon import *
+from datalogger.dlcommon import *
 
 # Flat file data logger
 # organizes data by {root}/YYYY/Mon/Day/{fn}.dat
