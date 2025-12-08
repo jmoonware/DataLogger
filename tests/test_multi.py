@@ -12,6 +12,7 @@ import time
 logger = logging.getLogger(__name__) 
 
 num_writers = 10
+origin = 'testval'
 
 def test_multiwrite(caplog):
 	dws = []
@@ -24,14 +25,14 @@ def test_multiwrite(caplog):
 	dr.stats_interval_counter=1
 	dr.Run()
 	for dn, dw in enumerate(dws):
-		dw.LogData('testval', dn)
+		dw.LogData(origin, dn)
 	time.sleep(1)	
 	dr.RebuildCache()
 	latest = dr.GetLatestReadings()
 	print(latest)
-	assert 'testval' in latest
-	assert len(latest['testval']) > 0
-	assert 'reading' in latest['testval']
-	cs = dr.GetCacheStats('testval')
+	assert origin in latest
+	assert len(latest[origin]) > 0
+	assert 'reading' in latest[origin]
+	cs = dr.GetCacheStats(origin=origin)
 	print(cs)
 	

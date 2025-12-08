@@ -1,4 +1,5 @@
 import os
+import time
 
 data_sep="\t"
 data_ext=".dat"
@@ -15,4 +16,13 @@ max_data_cache=10000000
 def file_for_date(data_root,c_dt,origin,ext='.dat'):
 	return(os.path.join(data_root,str(c_dt.year),str(c_dt.month),str(c_dt.day),origin+'.dat'))
 
-
+def unique_name(path_prefix):
+	# should be pretty unique, but not guaranteed
+	tfile_name = path_prefix + '.' + str(time.perf_counter()).split('.')[-1] 
+	# avoid name collisions
+	pre_tfile=tfile
+	i=0
+	while(os.path.exists(tfile)):
+		tfile=pre_tfile+'.'+str(i)
+		i+=1 
+	return tfile

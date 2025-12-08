@@ -87,7 +87,9 @@ class DataReader(Worker):
 	def RebuildCache(self,max_hours=72):
 		# rebuild cache
 
-		self.UpdateAvailableDatFiles()
+		# need a sync since this is usually called manually
+		with self.data_sync:
+			self.UpdateAvailableDatFiles()
 
 		for origin in self.origins:
 			t,r=self.GetTimestampUTCData(origin,oldest_hour=max_hours) # load in past 3 days by default
@@ -363,7 +365,7 @@ class DataReader(Worker):
 		return
 		
 	def UpdateAvailableDatFiles(self,single_origin=None):
-		# get all the availalalbe .dat origins, will filter below
+		# get all the available .dat origins, will filter below
 		if not single_origin:
 			self.origins=[]
 			dp=os.path.join(self.data_root,"**","*"+data_ext)

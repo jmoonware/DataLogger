@@ -1,6 +1,6 @@
-
 import sys
 import multiprocessing as mp
+mp.set_start_method("spawn",force=True)
 
 sys.path.append("..")
 sys.path.append("../datalogger")
@@ -31,7 +31,6 @@ def writer_proc(origin, logvalue):
 	dw.Stop()
 
 def test_multiwrite(caplog):
-	mp.set_start_method("spawn")
 	dr = DataReader()
 	dr.stats_interval=1
 	dr.stats_interval_counter=1
