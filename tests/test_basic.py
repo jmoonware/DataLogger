@@ -11,6 +11,8 @@ import time
 
 logger = logging.getLogger(__name__) 
 
+origin = 'testval'
+
 def test_basic(caplog):
 	dr = DataReader()
 	dr.stats_interval=1
@@ -18,15 +20,17 @@ def test_basic(caplog):
 	dw = DataWriter()
 	dw.Run()
 	dr.Run()
-	dw.LogData('testval', 1.0)
+	dw.LogData(origin, 1.0)
 	time.sleep(1)	
 	dr.RebuildCache()
 	latest = dr.GetLatestReadings()
 	print(latest)
-	assert 'testval' in latest
-	assert len(latest['testval']) > 0
-	assert 'reading' in latest['testval']
-	assert latest['testval']['reading']==1.0
-	cs = dr.GetCacheStats('testval')
+	assert origin in latest
+	assert len(latest[origin]) > 0
+	assert 'reading' in latest[origin]
+	# test_multi sends 0-9 to the files 
+	# so latest could be different than 1.0
+	assert latest[origin]['reading']<10
+	cs = dr.GetCacheStats(origin)
 	print(cs)
 	

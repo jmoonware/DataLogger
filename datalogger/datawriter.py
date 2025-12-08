@@ -14,7 +14,7 @@ import json
 import portalocker # needed for cross-process awareness
 import threading
 
-from dlcommon import *
+from datalogger.dlcommon import *
 
 class DataWriter(Worker):
 	def Init(self):
