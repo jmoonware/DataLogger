@@ -3,7 +3,6 @@ import time
 
 data_sep="\t"
 data_ext=".dat"
-report_timezone="US/Pacific"
 default_data_root="data"
 
 #

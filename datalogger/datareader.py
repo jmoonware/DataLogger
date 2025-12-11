@@ -15,6 +15,8 @@ import portalocker # needed for cross-process awareness
 import threading
 from datalogger.dlcommon import *
 
+report_timezone="US/Pacific"
+
 # Flat file data logger
 # organizes data by {root}/YYYY/Mon/Day/{fn}.dat
 # {root} is absolute file path
