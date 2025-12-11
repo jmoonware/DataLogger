@@ -15,7 +15,6 @@ import portalocker # needed for cross-process awareness
 import threading
 from datalogger.dlcommon import *
 
-report_timezone="US/Pacific"
 
 # Flat file data logger
 # organizes data by {root}/YYYY/Mon/Day/{fn}.dat
@@ -49,6 +48,7 @@ class DataReader(Worker):
 		self.data_sync=threading.Lock() # keeps Get functions and Execute/Update functions from races
 		self.stats_sync=threading.Lock() # keeps Get functions and Execute/Update functions from races
 		self.file_size_sync=threading.Lock() # need to lock top-level value,cache dicts while modifying with new origins
+		self.report_timezone="US/Pacific"
 
 	def Execute(self):
 		# this is where data gets logged periodically
@@ -149,7 +149,7 @@ class DataReader(Worker):
 		t,r=self.GetTimestampUTCData(origin,newest_hour=newest_hour,oldest_hour=oldest_hour,in_cache=in_cache)
 		# convert t to iso format strings in PTZ for graphing
 		# TODO: optimize this monstrosity
-		t_iso=[dt.fromtimestamp(ti,tzone.utc).astimezone(tz=pytz.timezone(report_timezone)).isoformat() for ti in t]
+		t_iso=[dt.fromtimestamp(ti,tzone.utc).astimezone(tz=pytz.timezone(self.report_timezone)).isoformat() for ti in t]
 		return t_iso,r
 
 	# Returns cached summary stats for an origin
@@ -209,7 +209,7 @@ class DataReader(Worker):
 									
 				
 		# TODO: optimize this monstrosity
-		t_iso=[dt.fromtimestamp(ti,tzone.utc).astimezone(tz=pytz.timezone(report_timezone)).isoformat() for ti in t]
+		t_iso=[dt.fromtimestamp(ti,tzone.utc).astimezone(tz=pytz.timezone(self.report_timezone)).isoformat() for ti in t]
 		
 		return t_iso,stats
 		
